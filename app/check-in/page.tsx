@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import ScreenShell from "@/components/ScreenShell";
 import { useAppState } from "@/lib/context/app-state";
-import { generatePlanItems, matchResourcesForItem } from "@/lib/plan-engine";
+import { generatePlanItems, applyTimeOverrides, matchResourcesForItem } from "@/lib/plan-engine";
 import { CategoryIcon } from "@/components/CategoryIcon";
 import { categoryIconClass } from "@/lib/category-style";
 
@@ -12,7 +12,10 @@ type Status = "pending" | "yes" | "no" | "partly";
 
 export default function CheckInPage() {
   const { state } = useAppState();
-  const items = useMemo(() => generatePlanItems(state.needs), [state.needs]);
+  const items = useMemo(
+    () => applyTimeOverrides(generatePlanItems(state.needs), state.timeOverrides),
+    [state.needs, state.timeOverrides]
+  );
   const [statuses, setStatuses] = useState<Record<string, Status>>({});
   const [rematchFor, setRematchFor] = useState<string | null>(null);
 
@@ -67,6 +70,7 @@ export default function CheckInPage() {
                     <div className="flex items-center gap-2">
                       <CategoryIcon category={item.category} className={`h-5 w-5 ${categoryIconClass[item.category]}`} />
                       <span className="font-medium text-ink">{item.label}</span>
+                      <span className="text-small tabular-nums text-ink-3">{item.time}</span>
                     </div>
                     <div className="flex gap-1.5">
                       {(["yes", "partly", "no"] as const).map((opt) => (

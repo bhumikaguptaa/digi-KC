@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import ScreenShell from "@/components/ScreenShell";
 import { useAppState } from "@/lib/context/app-state";
-import { generatePlanItems, matchResourcesForItem } from "@/lib/plan-engine";
+import { generatePlanItems, applyTimeOverrides, matchResourcesForItem } from "@/lib/plan-engine";
 import { CategoryIcon, categoryLabels } from "@/components/CategoryIcon";
 import { categoryIconClass } from "@/lib/category-style";
 import { staggerContainer, staggerItem } from "@/lib/motion";
@@ -13,7 +13,10 @@ import { staggerContainer, staggerItem } from "@/lib/motion";
 export default function MatchPage() {
   const router = useRouter();
   const { state } = useAppState();
-  const items = useMemo(() => generatePlanItems(state.needs), [state.needs]);
+  const items = useMemo(
+    () => applyTimeOverrides(generatePlanItems(state.needs), state.timeOverrides),
+    [state.needs, state.timeOverrides]
+  );
 
   const matchesByItem = useMemo(
     () => items.map((item) => ({ item, matches: matchResourcesForItem(item, state.needs) })),
@@ -47,7 +50,7 @@ export default function MatchPage() {
             <div className="flex items-center gap-2">
               <CategoryIcon category={item.category} className={`h-5 w-5 ${categoryIconClass[item.category]}`} />
               <span className="text-h2 text-ink">{item.label}</span>
-              <span className="text-micro uppercase text-ink-3">{categoryLabels[item.category]}</span>
+              <span className="text-micro uppercase text-ink-3">{categoryLabels[item.category]} · {item.time}</span>
             </div>
             <motion.div
               variants={staggerContainer}

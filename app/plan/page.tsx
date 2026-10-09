@@ -5,9 +5,10 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import ScreenShell from "@/components/ScreenShell";
 import { useAppState } from "@/lib/context/app-state";
-import { generatePlanItems } from "@/lib/plan-engine";
+import { generatePlanItems, applyTimeOverrides } from "@/lib/plan-engine";
 import { CategoryIcon, categoryLabels } from "@/components/CategoryIcon";
 import { categoryChipClass, categoryIconClass } from "@/lib/category-style";
+import TimePicker from "@/components/TimePicker";
 import { PlanItem } from "@/lib/data/types";
 import { staggerContainer, staggerItem } from "@/lib/motion";
 
@@ -19,8 +20,14 @@ const DAY_LABELS: Record<1 | 2 | 3, string> = {
 
 export default function PlanPage() {
   const router = useRouter();
-  const { state } = useAppState();
-  const items = useMemo(() => generatePlanItems(state.needs), [state.needs]);
+  const { state, setState } = useAppState();
+  const items = useMemo(
+    () => applyTimeOverrides(generatePlanItems(state.needs), state.timeOverrides),
+    [state.needs, state.timeOverrides]
+  );
+
+  const setItemTime = (id: string, time: string) =>
+    setState((prev) => ({ ...prev, timeOverrides: { ...prev.timeOverrides, [id]: time } }));
 
   const byDay: Record<1 | 2 | 3, PlanItem[]> = { 1: [], 2: [], 3: [] };
   items.forEach((i) => byDay[i.day].push(i));
@@ -62,9 +69,9 @@ export default function PlanPage() {
                   className="flex flex-col gap-2.5 rounded-card border border-line bg-white p-4 transition-colors hover:bg-surface"
                 >
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1">
                       <CategoryIcon category={item.category} className={`h-5 w-5 shrink-0 ${categoryIconClass[item.category]}`} />
-                      <span className="text-small tabular-nums text-ink-3">{item.time}</span>
+                      <TimePicker value={item.time} onChange={(time) => setItemTime(item.id, time)} />
                     </div>
                     <span className="h-1.5 w-1.5 rounded-pill bg-success" aria-hidden />
                   </div>

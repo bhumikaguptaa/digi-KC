@@ -7,6 +7,7 @@ export const categoryChipClass: Record<NeedCategory, string> = {
   equipment: "bg-violet-50 text-violet",
   checkin: "bg-pink-50 text-pink",
   mobility: "bg-primary-50 text-primary-700",
+  shelter: "bg-violet-50 text-violet",
 };
 
 export const categoryIconClass: Record<NeedCategory, string> = {
@@ -16,4 +17,5 @@ export const categoryIconClass: Record<NeedCategory, string> = {
   equipment: "text-violet",
   checkin: "text-pink",
   mobility: "text-primary-700",
+  shelter: "text-violet",
 };

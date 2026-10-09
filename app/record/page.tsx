@@ -4,7 +4,21 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import ScreenShell from "@/components/ScreenShell";
 import { useAppState } from "@/lib/context/app-state";
-import { demoRecord } from "@/lib/data/defaults";
+import { PatientRecord } from "@/lib/data/types";
+
+const fallbackRecord: PatientRecord = {
+  name: "Patient",
+  age: 0,
+  dischargedAt: "today",
+  facility: "University Health, Kansas City MO",
+  diagnosis: "Not specified",
+  mobility: "Not specified",
+  medicationCount: 0,
+  elevatedFallRisk: false,
+  followUps: [],
+  insurance: "Not specified",
+  livingSituation: "Not specified",
+};
 
 function Field({
   label,
@@ -40,7 +54,7 @@ function Field({
 export default function RecordPage() {
   const router = useRouter();
   const { state, setState } = useAppState();
-  const record = state.record ?? demoRecord;
+  const record = state.record ?? fallbackRecord;
   const [editing, setEditing] = useState(false);
   const [local, setLocal] = useState(record);
 

@@ -31,8 +31,9 @@ export default function EmergencyButton() {
   const [open, setOpen] = useState(false);
   const { state } = useAppState();
   const reduce = useReducedMotion();
-  const contactName = state.needs.emergencyContactName || "Emergency contact";
-  const contactPhone = state.needs.emergencyContactPhone || "Not set yet";
+  const hasContact = state.needs.emergencyContactName.trim().length > 0 && state.needs.emergencyContactPhone.trim().length > 0;
+  const contactName = state.needs.emergencyContactName;
+  const contactPhone = state.needs.emergencyContactPhone;
 
   return (
     <>
@@ -74,12 +75,19 @@ export default function EmergencyButton() {
                 </button>
               </div>
 
+              {!hasContact && (
+                <p className="mb-3 text-small text-ink-2">
+                  No emergency contact is on file. If something is wrong, call
+                  911 — don't wait to reach anyone else first.
+                </p>
+              )}
+
               <div className="flex flex-col gap-2">
                 <a
                   href="tel:911"
                   className="flex items-center justify-between rounded-control bg-alarm px-4 py-3.5 font-medium text-white transition-colors hover:bg-alarm/90"
                 >
-                  Call 911
+                  {hasContact ? "Call 911" : "Call 911 now"}
                   <span className="tabular-nums">911</span>
                 </a>
                 <a
@@ -89,13 +97,15 @@ export default function EmergencyButton() {
                   Call the care coordinator
                   <span className="tabular-nums">(800) 555-1212</span>
                 </a>
-                <a
-                  href={`tel:${contactPhone.replace(/[^0-9+]/g, "")}`}
-                  className="flex items-center justify-between rounded-control bg-surface px-4 py-3.5 font-medium text-ink transition-colors hover:bg-surface-2"
-                >
-                  Call {contactName}
-                  <span className="tabular-nums">{contactPhone}</span>
-                </a>
+                {hasContact && (
+                  <a
+                    href={`tel:${contactPhone.replace(/[^0-9+]/g, "")}`}
+                    className="flex items-center justify-between rounded-control bg-surface px-4 py-3.5 font-medium text-ink transition-colors hover:bg-surface-2"
+                  >
+                    Call {contactName}
+                    <span className="tabular-nums">{contactPhone}</span>
+                  </a>
+                )}
               </div>
 
               <p className="mb-2 mt-5 text-small font-medium text-ink-2">

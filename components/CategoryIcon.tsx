@@ -57,6 +57,14 @@ export function CategoryIcon({
           <path d="M12 7v6l-4 7M12 13l4 7M8 11l4-1 4 1" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       );
+    case "shelter":
+      return (
+        <svg {...common} viewBox="0 0 24 24">
+          <path d="M4 11l8-7 8 7" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M6 10v10h12V10" strokeLinejoin="round" />
+          <path d="M9 20v-6h2v2h2v-2h2v6" strokeLinejoin="round" />
+        </svg>
+      );
   }
 }
 
@@ -67,4 +75,5 @@ export const categoryLabels: Record<NeedCategory, string> = {
   equipment: "Equipment",
   checkin: "Check-in",
   mobility: "Mobility",
+  shelter: "Shelter",
 };

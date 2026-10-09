@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { Inter, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AppStateProvider } from "@/lib/context/app-state";
+import { LanguageProvider } from "@/lib/i18n";
 import EmergencyButton from "@/components/EmergencyButton";
+import TopBar from "@/components/TopBar";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -30,8 +32,11 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.variable} ${geistMono.variable} font-sans antialiased`}>
         <AppStateProvider>
-          {children}
-          <EmergencyButton />
+          <LanguageProvider>
+            <TopBar />
+            {children}
+            <EmergencyButton />
+          </LanguageProvider>
         </AppStateProvider>
       </body>
     </html>

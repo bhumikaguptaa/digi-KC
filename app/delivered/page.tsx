@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import ScreenShell from "@/components/ScreenShell";
 import { useAppState } from "@/lib/context/app-state";
-import { generatePlanItems } from "@/lib/plan-engine";
+import { generatePlanItems, applyTimeOverrides } from "@/lib/plan-engine";
 import { staggerContainer, staggerItem } from "@/lib/motion";
 
 type Reminder = "app" | "text" | "call";
@@ -16,7 +16,10 @@ export default function DeliveredPage() {
   const [reminder, setReminder] = useState<Reminder>(
     state.accessibility.noSmartphone ? "text" : "app"
   );
-  const items = useMemo(() => generatePlanItems(state.needs), [state.needs]);
+  const items = useMemo(
+    () => applyTimeOverrides(generatePlanItems(state.needs), state.timeOverrides),
+    [state.needs, state.timeOverrides]
+  );
 
   if (state.accessibility.noSmartphone || reminder === "text") {
     return (

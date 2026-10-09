@@ -162,6 +162,40 @@ export const resources: ResourceEntry[] = [
     servesRural: true,
     whyMatch: "Nearby volunteers for daily wellness checks, rural routes included",
   },
+  // shelter
+  {
+    id: "s1",
+    category: "shelter",
+    name: "City Union Mission Recuperative Care",
+    type: "Medical respite shelter bed",
+    distanceMiles: 1.9,
+    flatRate: 0,
+    seatsHeld: 1,
+    servesRural: false,
+    whyMatch: "Guaranteed bed held for post-op recovery, nursing check-ins included",
+  },
+  {
+    id: "s2",
+    category: "shelter",
+    name: "reStart Inc. Recuperative Unit",
+    type: "Medical respite shelter",
+    distanceMiles: 3.4,
+    flatRate: 0,
+    seatsHeld: 2,
+    servesRural: false,
+    whyMatch: "Partners directly with University Health for post-discharge recovery stays",
+  },
+  {
+    id: "s3",
+    category: "shelter",
+    name: "Kansas City Rescue Mission",
+    type: "Emergency shelter",
+    distanceMiles: 2.6,
+    flatRate: 0,
+    seatsHeld: 4,
+    servesRural: false,
+    whyMatch: "Walk-in intake, meals included, no ID required for first 72 hours",
+  },
 ];
 
 export function getResourcesForCategory(category: NeedCategory): ResourceEntry[] {

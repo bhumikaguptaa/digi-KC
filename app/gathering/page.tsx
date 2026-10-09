@@ -4,7 +4,23 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, useReducedMotion } from "framer-motion";
 import { useAppState } from "@/lib/context/app-state";
-import { demoRecord } from "@/lib/data/defaults";
+import { PatientRecord } from "@/lib/data/types";
+
+function buildFallbackRecord(name: string): PatientRecord {
+  return {
+    name: name || "Patient",
+    age: 0,
+    dischargedAt: "today",
+    facility: "University Health, Kansas City MO",
+    diagnosis: "Not specified",
+    mobility: "Not specified",
+    medicationCount: 0,
+    elevatedFallRisk: false,
+    followUps: [],
+    insurance: "Not specified",
+    livingSituation: "Not specified",
+  };
+}
 
 const STEPS = [
   "Locating patient record",
@@ -43,7 +59,7 @@ export default function GatheringPage() {
 
   useEffect(() => {
     if (resolved >= STEPS.length) {
-      setState((prev) => ({ ...prev, record: prev.record ?? demoRecord }));
+      setState((prev) => ({ ...prev, record: prev.record ?? buildFallbackRecord(prev.profile.patientName) }));
       const t = setTimeout(() => router.push("/record"), 500);
       return () => clearTimeout(t);
     }

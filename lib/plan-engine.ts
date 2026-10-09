@@ -1,7 +1,61 @@
 import { NeedsAnswers, PlanItem, ResourceMatch, CostLine, PayerTag } from "./data/types";
 import { getResourcesForCategory } from "./data/resources";
 
+export const TIME_SLOTS = [
+  "7:00 AM",
+  "8:00 AM",
+  "9:00 AM",
+  "10:00 AM",
+  "11:00 AM",
+  "12:00 PM",
+  "1:00 PM",
+  "2:00 PM",
+  "3:00 PM",
+  "4:00 PM",
+  "5:00 PM",
+  "5:30 PM",
+  "6:00 PM",
+  "7:00 PM",
+];
+
+function generateUnhousedPlanItems(): PlanItem[] {
+  return [
+    {
+      id: "shelter-bed-d1",
+      day: 1,
+      time: "2:00 PM",
+      label: "Guaranteed shelter bed check-in",
+      category: "shelter",
+      status: "scheduled",
+    },
+    { id: "meal-d1", day: 1, time: "5:30 PM", label: "Meal provided", category: "meals", status: "scheduled" },
+    {
+      id: "shelter-bed-d2",
+      day: 2,
+      time: "9:00 AM",
+      label: "Shelter bed held",
+      category: "shelter",
+      status: "scheduled",
+    },
+    { id: "meal-d2-am", day: 2, time: "12:00 PM", label: "Meal provided", category: "meals", status: "scheduled" },
+    { id: "meal-d2-pm", day: 2, time: "5:30 PM", label: "Meal provided", category: "meals", status: "scheduled" },
+    {
+      id: "shelter-bed-d3",
+      day: 3,
+      time: "9:00 AM",
+      label: "Shelter bed held",
+      category: "shelter",
+      status: "scheduled",
+    },
+    { id: "meal-d3", day: 3, time: "5:30 PM", label: "Meal provided", category: "meals", status: "scheduled" },
+  ];
+}
+
 export function generatePlanItems(needs: NeedsAnswers): PlanItem[] {
+  if (needs.housingStatus === "unhoused") {
+    return generateUnhousedPlanItems();
+  }
+
   const items: PlanItem[] = [];
   const selected = new Set(needs.needsSelected);
 
@@ -68,6 +122,10 @@ export function generatePlanItems(needs: NeedsAnswers): PlanItem[] {
   return items.sort((a, b) => a.day - b.day || a.time.localeCompare(b.time));
 }
 
+export function applyTimeOverrides(items: PlanItem[], overrides: Record<string, string>): PlanItem[] {
+  return items.map((item) => (overrides[item.id] ? { ...item, time: overrides[item.id] } : item));
+}
+
 export function matchResourcesForItem(item: PlanItem, needs: NeedsAnswers): ResourceMatch[] {
   const candidates = getResourcesForCategory(item.category);
   const zipIsRural = needs.zipCode.startsWith("640") === false;
@@ -78,6 +136,10 @@ export function matchResourcesForItem(item: PlanItem, needs: NeedsAnswers): Reso
   if (needs.caregiverBranch === "no-caregiver") {
     priorityScore += 20;
     priorityReasons.push("No regular caregiver");
+  }
+  if (needs.housingStatus === "unhoused") {
+    priorityScore += 20;
+    priorityReasons.push("No fixed address");
   }
   if (needs.canMoveSafely === "needs-help") {
     priorityScore += 15;
@@ -95,6 +157,8 @@ export function matchResourcesForItem(item: PlanItem, needs: NeedsAnswers): Reso
     priorityScore += 10;
     priorityReasons.push("Caregiver rarely available in person");
   }
+
+  priorityScore = Math.min(priorityScore, 100);
 
   const ranked = candidates
     .filter((r) => !zipIsRural || r.servesRural || true)
@@ -130,6 +194,7 @@ const HCBS_CATEGORY_COVERAGE: Record<string, number> = {
   equipment: 0.9,
   checkin: 0.6,
   mobility: 0.75,
+  shelter: 0.5,
 };
 
 export function buildCostLine(

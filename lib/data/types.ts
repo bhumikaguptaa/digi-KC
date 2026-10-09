@@ -13,7 +13,8 @@ export type NeedCategory =
   | "household"
   | "equipment"
   | "checkin"
-  | "mobility";
+  | "mobility"
+  | "shelter";
 
 export interface Profile {
   fillerRole: FillerRole | null;
@@ -91,6 +92,7 @@ export interface NeedsAnswers {
   insurance: InsuranceStatus | null;
   householdSize: "1" | "2" | "3" | "4+" | null;
   incomeBand: IncomeBand;
+  housingStatus: "stable" | "unhoused" | null;
 }
 
 export interface PlanItem {
@@ -136,6 +138,8 @@ export interface CheckInEntry {
   status: "pending" | "yes" | "no" | "partly";
 }
 
+export type DemoProfileId = "maria" | "shelter" | "uninsured";
+
 export interface AppState {
   profile: Profile;
   accessibility: AccessibilityPrefs;
@@ -146,4 +150,6 @@ export interface AppState {
   recordConfirmed: boolean;
   paymentMethod: PaymentMethod;
   assistanceApproved: boolean;
+  timeOverrides: Record<string, string>;
+  demoProfileId: DemoProfileId | null;
 }
