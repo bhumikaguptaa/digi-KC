@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --ink: #0b2b2f;
+  --ink-2: #52696f;
+  --ink-3: #8a9ba0;
+
+  --primary: #0fb5a5;
+  --primary-700: #0a8f82;
+  --primary-50: #e6f8f6;
+
+  --violet: #7b5cf0;
+  --violet-50: #f1edfe;
+
+  --pink: #ff5c8a;
+  --pink-50: #ffeff4;
+
+  --canvas: #ffffff;
+  --surface: #f7f9fa;
+  --surface-2: #eef3f4;
+  --line: #e3eaec;
+
+  --success: #12a594;
+  --alarm: #e5484d;
+
+  --base-font-scale: 1;
+}
+
+html {
+  font-size: calc(16px * var(--base-font-scale));
+}
+
+body {
+  background-color: var(--canvas);
+  color: var(--ink);
+}
+
+h1, h2, h3 {
+  text-wrap: balance;
+  line-height: 1.2;
+}
+
+body, p, li, span, div {
+  line-height: 1.5;
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+html[data-contrast="high"] {
+  --ink: #000000;
+  --ink-2: #000000;
+  --ink-3: #333333;
+  --canvas: #ffffff;
+  --surface: #ffffff;
+  --surface-2: #f0f0f0;
+  --line: #000000;
+  --primary-50: #ffffff;
+  --violet-50: #ffffff;
+  --pink-50: #ffffff;
+}
+
+::selection {
+  background-color: var(--primary);
+  color: #ffffff;
+}
